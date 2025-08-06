@@ -7,7 +7,7 @@ const CartModal = ({ isOpen, onClose, onCheckout }) => {
   const { 
     items, 
     total, 
-    addItem, 
+    // addItem, // Removido - não usado
     removeItem, 
     updateQuantity, 
     clearCart 

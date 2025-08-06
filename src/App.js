@@ -20,7 +20,7 @@ const app = initializeApp(FIREBASE_CONFIG);
 const auth = getAuth(app);
 
 function App() {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null); // Removido - não usado
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(PAGES.MENU);
   const [selectedCategory, setSelectedCategory] = useState(CATEGORIES.ALL);
@@ -29,7 +29,7 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const { itemCount, total } = useCart();
+  const { itemCount } = useCart(); // Removido 'total' não usado
 
   // Verificar se é mobile
   useEffect(() => {
@@ -47,14 +47,14 @@ function App() {
 
   // Autenticação Firebase
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        // setUser(currentUser); // Removido - não usado
         setLoading(false);
       } else {
         signInAnonymously(auth)
           .then((result) => {
-            setUser(result.user);
+            // setUser(result.user); // Removido - não usado
             setLoading(false);
           })
           .catch((error) => {
@@ -115,9 +115,9 @@ Seu pedido será preparado em breve.
     alert(orderSummary);
   };
 
-  const formatPrice = (price) => {
-    return `R$ ${price.toFixed(2).replace('.', ',')}`;
-  };
+  // const formatPrice = (price) => { // Removido - não usado
+  //   return `R$ ${price.toFixed(2).replace('.', ',')}`;
+  // };
 
   if (loading) {
     return (
