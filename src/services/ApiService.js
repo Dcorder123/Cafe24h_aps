@@ -88,6 +88,21 @@ class ApiService {
     });
   }
 
+  // Cancelar pedido
+  async cancelOrder(orderId, motivo = 'Cancelado pelo cliente') {
+    return this.request(`/orders/${orderId}/cancel`, {
+      method: 'PATCH',
+      body: JSON.stringify({ motivo }),
+    });
+  }
+
+  // Deletar pedido (alternativa)
+  async deleteOrder(orderId) {
+    return this.request(`/orders/${orderId}`, {
+      method: 'DELETE',
+    });
+  }
+
   // Métodos para reservas
   async createReservation(reservationData) {
     return this.request('/reservations', {

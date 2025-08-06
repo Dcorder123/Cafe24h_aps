@@ -1,0 +1,26 @@
+{
+  "name": "cafe24h-backend",
+  "version": "1.0.0",
+  "description": "API Backend do Sistema Café 24h",
+  "main": "server-complete.js",
+  "scripts": {
+    "start": "node server-complete.js",
+    "dev": "nodemon server-complete.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["nodejs", "express", "mysql", "api", "cafeteria"],
+  "author": "Equipe APS",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mysql2": "^3.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

@@ -93,6 +93,38 @@ const OrderHistory = () => {
     }
   };
 
+  // Função para cancelar pedido
+  const cancelOrder = async (orderId) => {
+    try {
+      const confirmed = window.confirm('Tem certeza que deseja cancelar este pedido?');
+      if (!confirmed) return;
+
+      setLoading(true);
+      await apiService.cancelOrder(orderId);
+      
+      // Atualizar a lista local
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.id === orderId 
+            ? { ...order, status: 'cancelado' }
+            : order
+        )
+      );
+      
+      alert('Pedido cancelado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao cancelar pedido:', error);
+      alert('Erro ao cancelar pedido. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Verificar se o pedido pode ser cancelado
+  const canCancelOrder = (status) => {
+    return ['pendente', 'confirmado', 'preparando'].includes(status);
+  };
+
   const formatPrice = (price) => {
     return `R$ ${price.toFixed(2).replace('.', ',')}`;
   };
@@ -245,13 +277,17 @@ const OrderHistory = () => {
 
                   {/* Ações */}
                   <div className="flex justify-end space-x-3 mt-4 pt-4 border-t border-gray-200">
-                    {order.status === 'pendente' && (
-                      <button className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm">
-                        Cancelar Pedido
+                    {canCancelOrder(order.status) && (
+                      <button 
+                        onClick={() => cancelOrder(order.id)}
+                        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
+                        disabled={loading}
+                      >
+                        {loading ? '⏳ Cancelando...' : '❌ Cancelar Pedido'}
                       </button>
                     )}
-                    <button className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors text-sm">
-                      Pedir Novamente
+                    <button className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors text-sm font-medium">
+                      🔄 Pedir Novamente
                     </button>
                   </div>
                 </div>
