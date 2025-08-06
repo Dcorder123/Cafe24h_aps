@@ -1,0 +1,48 @@
+# Configuração do Netlify para Café 24h
+[build]
+  # Comando para build de produção
+  command = "npm run build"
+  
+  # Diretório a ser publicado
+  publish = "build"
+  
+  # Node.js version
+  environment = { NODE_VERSION = "18" }
+
+# Configurações de redirecionamento para SPA
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers de segurança
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Headers para arquivos estáticos (cache)
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Headers para service worker
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# Configurações de ambiente (exemplo)
+[context.production.environment]
+  REACT_APP_ENV = "production"
+  REACT_APP_API_URL = "https://sua-api-producao.herokuapp.com"
+
+[context.deploy-preview.environment]
+  REACT_APP_ENV = "preview"
+
+[context.branch-deploy.environment]
+  REACT_APP_ENV = "development"

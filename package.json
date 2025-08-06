@@ -2,7 +2,14 @@
   "name": "sistema-cafeteria",
   "version": "1.0.0",
   "description": "Sistema web completo para gerenciamento de cafeteria com React + Node.js",
-  "keywords": ["react", "nodejs", "express", "mysql", "cafeteria", "sistema-pedidos"],
+  "keywords": [
+    "react",
+    "nodejs",
+    "express",
+    "mysql",
+    "cafeteria",
+    "sistema-pedidos"
+  ],
   "author": "Equipe APS",
   "license": "MIT",
   "repository": {
@@ -27,11 +34,18 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev": "concurrently \"npm start\" \"cd backend && node server-complete.js\"",
+    "build:netlify": "npm run build && echo 'Build concluído para Netlify!'",
+    "start:backend": "cd backend && node server-complete.js",
+    "install:all": "npm install && cd backend && npm install"
   },
   "eslintConfig": {
     "extends": [
