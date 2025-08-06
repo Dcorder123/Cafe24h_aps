@@ -1,201 +1,280 @@
-# ☕ Cafe24h - Sistema de Cafeteria Completo
+# ☕ Sistema de Cafeteria
 
-> Sistema web completo para gerenciamento de cafeteria desenvolvido para APS - Análise e Projeto de Sistemas
+> Sistema web completo para gerenciamento de cafeteria com React + Node.js
 
-[![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-16+-339933?style=for-the-badge&logo=node.js)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Express-4.18+-000000?style=for-the-badge&logo=express)](https://expressjs.com/)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1?style=for-the-badge&logo=mysql)](https://mysql.com/)
+[![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=flat&logo=react&logoColor=black)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-16+-339933?style=flat&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-4.18+-000000?style=flat&logo=express&logoColor=white)](https://expressjs.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1?style=flat&logo=mysql&logoColor=white)](https://mysql.com/)
+[![Firebase](https://img.shields.io/badge/Firebase-Auth-FFCA28?style=flat&logo=firebase&logoColor=black)](https://firebase.google.com/)
 
-## 🎯 Sobre o Projeto
+## 📋 Sobre o Projeto
 
-Sistema de cafeteria desenvolvido como projeto acadêmico para **APS (Atividade Prática Supervisionada)** do curso de **Engenharia da Computação** do **Instituto Federal da Paraíba (IFPB) - Campus Campina Grande**.
+Sistema de cafeteria desenvolvido para APS (Atividade Prática Supervisionada) que permite aos clientes:
 
-### 👥 Equipe de Desenvolvimento
-- **Gustavo Henrique**
-- **Daniel Barbosa** 
-- **Danilo Lucena**
+- 🛒 **Fazer pedidos** online com carrinho intuitivo
+- 💳 **Pagar** via PIX, cartão ou dinheiro
+- 📅 **Reservar mesas** para atendimento presencial
+- 📱 **Acompanhar** histórico de pedidos em tempo real
+- 🍽️ **Escolher** modalidade de entrega (local, delivery, retirada)
 
-## ✨ Funcionalidades Principais
+## 🎯 Funcionalidades
 
-### 🛒 Para Clientes
-- ✅ **Autenticação** - Cadastro e login seguro com Firebase
-- ✅ **Cardápio Digital** - Navegação intuitiva por categorias
-- ✅ **Carrinho Inteligente** - Persistência local e gestão automática
-- ✅ **Pedidos Online** - Sistema completo de pedidos
-- ✅ **Múltiplos Pagamentos** - PIX, Cartão e Dinheiro
-- ✅ **Modalidades de Entrega** - Local, Delivery e Retirada
-- ✅ **Reserva de Mesas** - Sistema de reservas integrado
-- ✅ **Histórico Completo** - Acompanhamento de todos os pedidos
+### 👤 Para Clientes
+- ✅ Cadastro e autenticação (Firebase)
+- ✅ Navegação por categorias de produtos
+- ✅ Carrinho de compras com persistência
+- ✅ Sistema de pedidos completo
+- ✅ Múltiplas formas de pagamento
+- ✅ Reserva de mesas
+- ✅ Histórico de pedidos
+- ✅ Interface responsiva
 
-### 👨‍💼 Para Administradores
-- ✅ **Dashboard Completo** - Visão geral do sistema
-- ✅ **Gestão de Produtos** - CRUD completo
-- ✅ **Controle de Pedidos** - Acompanhamento em tempo real
-- ✅ **Relatórios** - Análise de vendas e performance
+### 🏪 Para o Estabelecimento
+- ✅ Gerenciamento de produtos
+- ✅ Controle de pedidos e status
+- ✅ Sistema de reservas
+- ✅ Relatórios de vendas
+- ✅ Notificações em tempo real
 
 ## 🛠️ Tecnologias Utilizadas
 
 ### Frontend
-- **React** 18.2.0 - Interface de usuário
-- **Tailwind CSS** - Estilização moderna
-- **Firebase Auth** - Autenticação segura
-- **React Router** - Navegação SPA
+- **React 18.2.0** - Interface de usuário
+- **Tailwind CSS** - Estilização
+- **Firebase Auth** - Autenticação
+- **React Hooks** - Gerenciamento de estado
 
 ### Backend
 - **Node.js** - Runtime JavaScript
 - **Express.js** - Framework web
-- **MySQL** - Banco de dados relacional
-- **CORS** - Política de origem cruzada
+- **MySQL** - Banco de dados
+- **CORS** - Política de cross-origin
 
-### Ferramentas
-- **Vite** - Build tool moderna
-- **ESLint** - Linting de código
+### DevOps & Ferramentas
+- **npm** - Gerenciador de pacotes
 - **Git** - Controle de versão
+- **VSCode** - Editor de código
 
-## 🚀 Como Executar o Projeto
+## 🚀 Como Executar
 
 ### Pré-requisitos
-- Node.js 16+ instalado
-- MySQL 8.0+ configurado
-- Git instalado
+- [Node.js 16+](https://nodejs.org/)
+- [MySQL 8.0+](https://mysql.com/) (opcional)
+- [Git](https://git-scm.com/)
 
-### 1️⃣ Clone o Repositório
+### 1️⃣ Clone o repositório
 ```bash
-git clone https://github.com/seu-usuario/Cafe24h_aps.git
-cd Cafe24h_aps
+git clone https://github.com/seu-usuario/sistema-cafeteria.git
+cd sistema-cafeteria
 ```
 
-### 2️⃣ Instale as Dependências
+### 2️⃣ Instale as dependências
 ```bash
 npm install
 ```
 
-### 3️⃣ Configure o Ambiente
+### 3️⃣ Configure o ambiente
 ```bash
 # Copie o arquivo de exemplo
 cp .env.example .env
 
-# Configure as variáveis no arquivo .env
-# - Dados do MySQL
-# - Chaves do Firebase (opcional)
+# Edite as variáveis conforme necessário
 ```
 
-### 4️⃣ Configure o Banco de Dados
+### 4️⃣ Inicie o backend
 ```bash
-# Execute os scripts na pasta database/
-# 1. schema.sql - Estrutura das tabelas
-# 2. sample-data.sql - Dados de exemplo
-```
-
-### 5️⃣ Execute o Sistema
-
-#### Terminal 1 - Backend API:
-```bash
+# Terminal 1 - API
 node server-complete.js
 ```
 
-#### Terminal 2 - Frontend React:
+### 5️⃣ Inicie o frontend
 ```bash
+# Terminal 2 - React
 npm start
 ```
 
-### 6️⃣ Acesse o Sistema
-- **Frontend:** http://localhost:3000
-- **API:** http://localhost:3001
+### 6️⃣ Acesse o sistema
+- **Frontend**: http://localhost:3000
+- **API**: http://localhost:3001
+
+### 🎯 Executar com Script Automático
+```bash
+# Windows
+iniciar.bat
+
+# Ou duplo clique no arquivo iniciar.bat
+```
 
 ## 📁 Estrutura do Projeto
 
 ```
-Cafe24h_aps/
-├── 📁 src/                     # Frontend React
-│   ├── 📁 components/          # Componentes reutilizáveis
-│   ├── 📁 pages/              # Páginas da aplicação
-│   ├── 📁 services/           # Serviços e APIs
-│   ├── 📁 styles/             # Estilos CSS
-│   └── 📄 App.js              # Componente principal
-├── 📁 public/                  # Arquivos públicos
-├── 📁 database/               # Scripts do banco de dados
-├── 📁 projeto_diagramas_responsabilidade/  # Diagramas UML
-├── 📄 server-complete.js      # Servidor Express
-├── 📄 package.json           # Dependências do projeto
-├── 📄 .env.example           # Variáveis de ambiente
-└── 📄 README.md              # Este arquivo
+sistema-cafeteria/
+├── 📁 src/                          # Código React
+│   ├── 📁 components/               # Componentes reutilizáveis
+│   │   ├── 📁 Cart/                # Carrinho de compras
+│   │   ├── 📁 Layout/              # Layout e navegação
+│   │   ├── 📁 Orders/              # Histórico de pedidos
+│   │   └── 📁 Payment/             # Sistema de pagamento
+│   ├── 📁 pages/                   # Páginas principais
+│   ├── 📁 services/                # Comunicação com API
+│   └── 📁 utils/                   # Utilitários e constantes
+├── 📁 database/                     # Scripts SQL
+├── 📁 docs/                        # Documentação
+├── 📄 server-complete.js           # API completa
+├── 📄 package.json                 # Dependências
+├── 📄 iniciar.bat                  # Script de inicialização
+└── 📄 README.md                    # Este arquivo
 ```
 
-## 🔄 Fluxos do Sistema
+## 🎨 Interface
 
-### 1. **Cadastro de Cliente**
-Processo completo com validações, verificação de duplicidade e confirmação por email.
+### 🏠 Tela Principal
+- Menu de produtos por categoria
+- Busca inteligente
+- Carrinho lateral
+- Navegação responsiva
 
-### 2. **Fazer Pedido**
-Seleção de produtos, validação de estoque, cálculo de valores e envio para cozinha.
+### 🛒 Carrinho e Pedidos
+- Adição/remoção de itens
+- Cálculo automático de totais
+- Escolha de modalidade de entrega
+- Sistema de pagamento integrado
 
-### 3. **Processar Pagamento**
-Sistema multimodal supporting PIX (QR Code), cartão (validação online) e dinheiro (cálculo de troco).
+### 📱 Responsivo
+- Design mobile-first
+- Adaptado para tablets e desktops
+- Navegação otimizada para touch
 
-### 4. **Solicitar Reserva**
-Verificação de disponibilidade em tempo real e confirmação da reserva.
+## 💳 Sistema de Pagamento
 
-### 5. **Entrega do Pedido**
-Coordenação final com notificação ao cliente e registro de métricas.
+### Modalidades Suportadas
+- **PIX** 📱 - Código gerado automaticamente
+- **Cartão** 💳 - Débito e crédito
+- **Dinheiro** 💵 - Com cálculo de troco
 
-## 📊 Diagramas UML
+### Tipos de Entrega
+- **Local** 🍽️ - Consumir no estabelecimento
+- **Delivery** 🚚 - Entrega em domicílio
+- **Pickup** 🏃 - Retirada no balcão
 
-O projeto inclui documentação completa com diagramas de responsabilidade:
+## 📊 Banco de Dados
 
-- **Diagramas de Sequência** - Para cada fluxo principal
-- **Casos de Uso** - Interações entre atores e sistema  
-- **Modelo Conceitual** - Estrutura de dados e relacionamentos
+### Principais Tabelas
+- `usuarios` - Dados dos clientes
+- `produtos` - Catálogo de produtos
+- `pedidos` - Pedidos realizados
+- `reservas` - Reservas de mesa
+- `pagamentos` - Transações financeiras
 
-### 🌐 Visualização Interativa
-Acesse a interface interativa dos diagramas em: `projeto_diagramas_responsabilidade/src/index.html`
+### Configuração MySQL
+```sql
+-- Execute o script de criação
+source database/caffe_database.sql;
 
-## 🐛 Solução de Problemas
+-- Ou use o arquivo individual
+mysql -u root -p < database/caffe_database.sql
+```
 
-### Erro de Autenticação
-- Verifique se as chaves do Firebase estão configuradas corretamente
-- O sistema funciona com usuário de teste se o Firebase não estiver configurado
+## 🔧 Configuração
 
-### Erro de Conexão com Banco
-- Verifique se o MySQL está rodando
-- Confirme as credenciais no arquivo `.env`
-- Execute os scripts da pasta `database/`
+### Variáveis de Ambiente (.env)
+```env
+# Database
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=sua_senha
+DB_NAME=caffe_db
 
-### Porta já em uso
-- Frontend: Altere a porta no `package.json`
-- Backend: Modifique a porta no `server-complete.js`
+# Server
+SERVER_PORT=3001
+NODE_ENV=development
 
-## 📈 Próximas Funcionalidades
+# Frontend
+REACT_APP_API_URL=http://localhost:3001/api
+```
 
-- [ ] Sistema de notificações push
-- [ ] Integração com delivery apps
-- [ ] Dashboard de analytics avançado
-- [ ] Sistema de fidelidade
+### Firebase Setup
+1. Crie um projeto no [Firebase Console](https://console.firebase.google.com/)
+2. Ative Authentication
+3. Configure as credenciais em `src/utils/constants.js`
+
+## 🧪 Modo de Desenvolvimento
+
+### Com Banco MySQL
+```bash
+# 1. Configure MySQL e execute os scripts
+# 2. Inicie com dados reais
+node server.js
+```
+
+### Sem Banco (Mock)
+```bash
+# Inicie com dados simulados
+node server-complete.js
+```
+
+### Usuário de Teste
+- **ID**: 1
+- **Nome**: Usuário de Teste
+- **Email**: teste@caffe.com
+- **Funciona**: Sem autenticação Firebase
+
+## 📋 Roadmap
+
+### ✅ Implementado
+- [x] Sistema de pedidos completo
+- [x] Carrinho de compras
+- [x] Múltiplas formas de pagamento
+- [x] Reserva de mesas
+- [x] Histórico de pedidos
+- [x] Interface responsiva
+
+### 🔄 Em Desenvolvimento
+- [ ] Notificações push
+- [ ] Avaliações de produtos
+- [ ] Sistema de cupons
+- [ ] Chat de suporte
+
+### 🎯 Futuras Melhorias
 - [ ] App mobile nativo
+- [ ] Integração com delivery
+- [ ] Dashboard administrativo
+- [ ] Relatórios avançados
 
-## 🤝 Como Contribuir
+## 🤝 Contribuindo
 
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/nova-funcionalidade`)
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-## 📄 Licença
+## 📝 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto é licenciado sob a MIT License - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
-## 📞 Contato
+## 👥 Equipe de Desenvolvimento
 
-**Projeto desenvolvido para fins acadêmicos no IFPB - Campus Campina Grande**
+- **Desenvolvedor Full Stack** - [Seu Nome](https://github.com/seu-usuario)
+- **Orientador APS** - [Nome do Professor]
 
-- **Disciplina:** Análise e Projeto de Sistemas (APS)
-- **Curso:** Engenharia da Computação
-- **Ano:** 2025.1
+## 📞 Suporte
+
+- 📧 Email: suporte@cafeteria.com
+- 📱 WhatsApp: (11) 99999-9999
+- 🌐 Website: [cafeteria.com.br](https://cafeteria.com.br)
+
+## 🎯 Status do Projeto
+
+**🟢 Ativo** - Em desenvolvimento contínuo
 
 ---
 
-### ⭐ Se este projeto te ajudou, deixe uma estrela!
+<div align="center">
 
-**[⬆️ Voltar ao topo](#-cafe24h---sistema-de-cafeteria-completo)**
+**[⬆ Voltar ao topo](#-sistema-de-cafeteria)**
+
+Made with ☕ and ❤️ for APS
+
+</div>
