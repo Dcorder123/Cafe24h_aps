@@ -13,8 +13,10 @@ import CartModal from './components/Cart/CartModal';
 import AdminModal from './components/Admin/AdminModal';
 import NotFoundPage from './pages/NotFoundPage';
 import PrivacyPage from './pages/PrivacyPage';
+import AdminPage from './pages/AdminPage';
 import Footer from './components/Layout/Footer';
 import CookieBanner from './components/ui/CookieBanner';
+import OrderSuccessModal from './components/Orders/OrderSuccessModal';
 
 // Hooks, serviços e utils
 import { useCart } from './hooks/useCart';
@@ -33,6 +35,7 @@ function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [orderSuccessData, setOrderSuccessData] = useState(null);
 
   // Modo Escuro
   const [darkMode, setDarkMode] = useState(() => {
@@ -153,20 +156,11 @@ function App() {
   };
 
   const handleCheckout = (items, total, paymentData) => {
-    const orderSummary = `
-🎉 Pedido Confirmado! 
-
-📋 Resumo:
-${items.map(item => `• ${item.quantity}x ${item.name} - R$ ${(item.price * item.quantity).toFixed(2)}`).join('\n')}
-
-💰 Total: R$ ${total.toFixed(2)}
-💳 Pagamento: ${paymentData.method === 'pix' ? 'PIX' : paymentData.method === 'card' ? 'Cartão' : 'Dinheiro'}
-🚚 Entrega: ${paymentData.delivery === 'local' ? 'Comer no Local' : paymentData.delivery === 'delivery' ? 'Entrega' : 'Retirada'}
-
-Obrigado por escolher o Caffe! 
-Seu pedido será preparado em breve.
-    `;
-    alert(orderSummary);
+    setOrderSuccessData({
+      items,
+      total,
+      ...paymentData
+    });
   };
 
   if (loading) {
@@ -211,7 +205,7 @@ Seu pedido será preparado em breve.
             isAdmin={isAdmin}
             onOpenAdmin={() => {
               if (isMobile) setSidebarCollapsed(true);
-              setIsAdminModalOpen(true);
+              handlePageChange(PAGES.ADMIN);
             }}
           />
         </div>
@@ -324,16 +318,18 @@ Seu pedido será preparado em breve.
 
                 {/* Botão Admin - Apenas Desktop (no mobile fica na sidebar) */}
                 <button
-                  onClick={() => setIsAdminModalOpen(true)}
+                  onClick={() => handlePageChange(PAGES.ADMIN)}
                   className={`hidden md:flex p-2 sm:px-3 sm:py-2 rounded-xl text-sm font-medium transition-all items-center gap-1.5 ${
-                    isAdmin
+                    currentPage === PAGES.ADMIN
+                      ? 'bg-amber-600 text-white shadow-sm'
+                      : isAdmin
                       ? 'bg-red-500/10 text-red-600 border border-red-500/30'
                       : darkMode ? 'hover:bg-gray-800 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
                   }`}
                   title={isAdmin ? "Painel Admin (Ativo)" : "Acesso de Administrador"}
                 >
                   <span className="text-lg">🛡️</span>
-                  <span>{isAdmin ? 'Admin (Ativo)' : 'Admin'}</span>
+                  <span>{isAdmin ? 'Painel Admin' : 'Admin'}</span>
                 </button>
 
                 {/* Botão Modo Escuro */}
@@ -380,7 +376,7 @@ Seu pedido será preparado em breve.
                 onOpenCart={handleCartOpen}
                 isAdmin={isAdmin}
                 onDeleteProduct={handleDeleteProduct}
-                onOpenAddProduct={() => setIsAdminModalOpen(true)}
+                onOpenAddProduct={() => handlePageChange(PAGES.ADMIN)}
                 darkMode={darkMode}
               />
             )}
@@ -408,8 +404,18 @@ Seu pedido será preparado em breve.
               />
             )}
 
+            {currentPage === PAGES.ADMIN && (
+              <AdminPage
+                isAdmin={isAdmin}
+                onLoginSuccess={handleAdminLoginSuccess}
+                onLogout={handleAdminLogout}
+                onNavigate={handlePageChange}
+                darkMode={darkMode}
+              />
+            )}
+
             {/* Página 404 para rotas inexistentes */}
-            {![PAGES.MENU, PAGES.ACCOUNT, PAGES.RESERVATION, PAGES.HISTORY, PAGES.PRIVACY].includes(currentPage) && (
+            {![PAGES.MENU, PAGES.ACCOUNT, PAGES.RESERVATION, PAGES.HISTORY, PAGES.PRIVACY, PAGES.ADMIN].includes(currentPage) && (
               <NotFoundPage 
                 onNavigate={handlePageChange}
                 darkMode={darkMode}
@@ -439,6 +445,15 @@ Seu pedido será preparado em breve.
           isAdmin={isAdmin}
           onLoginSuccess={handleAdminLoginSuccess}
           onLogout={handleAdminLogout}
+          darkMode={darkMode}
+        />
+
+        {/* Modal de Pedido Confirmado */}
+        <OrderSuccessModal
+          isOpen={!!orderSuccessData}
+          onClose={() => setOrderSuccessData(null)}
+          orderData={orderSuccessData}
+          onNavigate={handlePageChange}
           darkMode={darkMode}
         />
       </div>

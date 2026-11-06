@@ -8,18 +8,24 @@ const OrderHistory = ({ darkMode = false }) => {
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   const statusColors = {
-    'pendente': 'bg-yellow-100 text-yellow-800',
-    'preparando': 'bg-blue-100 text-blue-800',
-    'pronto': 'bg-green-100 text-green-800',
-    'entregue': 'bg-gray-100 text-gray-800',
-    'cancelado': 'bg-red-100 text-red-800'
+    'pendente': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/60 dark:text-yellow-300',
+    'confirmado': 'bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300',
+    'preparando': 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300',
+    'pronto': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300',
+    'saiu para entrega': 'bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-300',
+    'entregue': 'bg-green-100 text-green-800 dark:bg-green-900/60 dark:text-green-300',
+    'finalizado': 'bg-green-100 text-green-800 dark:bg-green-900/60 dark:text-green-300',
+    'cancelado': 'bg-red-100 text-red-800 dark:bg-red-900/60 dark:text-red-300'
   };
 
   const statusIcons = {
     'pendente': '⏳',
+    'confirmado': '👍',
     'preparando': '👨‍🍳',
-    'pronto': '✅',
-    'entregue': '🏁',
+    'pronto': '🍽️',
+    'saiu para entrega': '🚚',
+    'entregue': '✅',
+    'finalizado': '✅',
     'cancelado': '❌'
   };
 
@@ -57,37 +63,64 @@ const OrderHistory = ({ darkMode = false }) => {
         console.log('Usando usuário de teste para histórico');
       }
 
+      // Carregar pedidos salvos em localStorage (sincronizado com Admin e Checkout)
+      let localOrders = [];
+      try {
+        const stored = localStorage.getItem('cafe24h_orders');
+        if (stored) localOrders = JSON.parse(stored);
+      } catch {}
+
+      if (Array.isArray(localOrders) && localOrders.length > 0) {
+        setOrders(localOrders);
+        setLoading(false);
+        return;
+      }
+
       const userOrders = await apiService.getOrdersByUser(userId);
-      setOrders(userOrders);
+      if (Array.isArray(userOrders) && userOrders.length > 0) {
+        setOrders(userOrders);
+        localStorage.setItem('cafe24h_orders', JSON.stringify(userOrders));
+      } else {
+        throw new Error('Nenhum pedido retornado da API');
+      }
     } catch (error) {
-      console.error('Erro ao carregar histórico:', error);
-      // Dados de exemplo se a API falhar
-      setOrders([
+      // Dados de exemplo caso não haja pedidos ainda
+      const sampleOrders = [
         {
-          id: 1,
-          data_pedido: '2024-01-15T10:30:00',
+          id: 'PED-1001',
+          data_pedido: new Date(Date.now() - 3600000).toISOString(),
           total: 25.50,
-          status: 'entregue',
+          status: 'preparando',
           tipo_entrega: 'delivery',
           metodo_pagamento: 'pix',
+          cliente: 'Daniel',
+          telefone: '(11) 98765-4321',
+          endereco: 'Rua das Flores, 120 - Apto 3',
           items: [
-            { nome: 'Café Expresso', quantidade: 2, preco_unitario: 5.00 },
-            { nome: 'Pão de Açúcar', quantidade: 1, preco_unitario: 15.50 }
+            { nome: 'Café Expresso Clássico', quantidade: 2, preco_unitario: 8.50, subtotal: 17.00 },
+            { nome: 'Bolo de Cenoura', quantidade: 1, preco_unitario: 8.50, subtotal: 8.50 }
           ]
         },
         {
-          id: 2,
-          data_pedido: '2024-01-10T14:15:00',
+          id: 'PED-1002',
+          data_pedido: new Date(Date.now() - 86400000).toISOString(),
           total: 18.00,
-          status: 'preparando',
-          tipo_entrega: 'pickup',
+          status: 'finalizado',
+          tipo_entrega: 'retirada',
           metodo_pagamento: 'card',
+          cliente: 'Daniel',
+          telefone: '(11) 98765-4321',
+          endereco: 'Retirada no Balcão',
           items: [
-            { nome: 'Cappuccino', quantidade: 1, preco_unitario: 8.00 },
-            { nome: 'Croissant', quantidade: 2, preco_unitario: 5.00 }
+            { nome: 'Cappuccino Especial', quantidade: 1, preco_unitario: 11.50, subtotal: 11.50 },
+            { nome: 'Brigadeiro Gourmet', quantidade: 2, preco_unitario: 3.25, subtotal: 6.50 }
           ]
         }
-      ]);
+      ];
+      setOrders(sampleOrders);
+      try {
+        localStorage.setItem('cafe24h_orders', JSON.stringify(sampleOrders));
+      } catch {}
     } finally {
       setLoading(false);
     }
@@ -100,16 +133,22 @@ const OrderHistory = ({ darkMode = false }) => {
       if (!confirmed) return;
 
       setLoading(true);
-      await apiService.cancelOrder(orderId);
+      try {
+        await apiService.cancelOrder(orderId);
+      } catch {}
       
-      // Atualizar a lista local
-      setOrders(prevOrders => 
-        prevOrders.map(order => 
+      // Atualizar a lista local e persistir
+      setOrders(prevOrders => {
+        const updated = prevOrders.map(order => 
           order.id === orderId 
             ? { ...order, status: 'cancelado' }
             : order
-        )
-      );
+        );
+        try {
+          localStorage.setItem('cafe24h_orders', JSON.stringify(updated));
+        } catch {}
+        return updated;
+      });
       
       alert('Pedido cancelado com sucesso!');
     } catch (error) {

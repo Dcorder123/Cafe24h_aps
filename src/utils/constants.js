@@ -9,6 +9,7 @@ export const PAGES = {
   RESERVATION: 'reservation',
   ACCOUNT: 'account',
   PRIVACY: 'privacy',
+  ADMIN: 'admin',
   NOT_FOUND: 'not_found'
 };
 
@@ -29,7 +30,8 @@ export const ORDER_STATUS = {
   CONFIRMED: 'Confirmado',
   PREPARING: 'Preparando',
   READY: 'Pronto',
-  DELIVERED: 'Entregue',
+  OUT_FOR_DELIVERY: 'Saiu para Entrega',
+  DELIVERED: 'Finalizado',
   CANCELLED: 'Cancelado'
 };
 

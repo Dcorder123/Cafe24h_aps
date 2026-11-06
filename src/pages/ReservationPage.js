@@ -3,6 +3,7 @@ import ReservationModal from '../components/Reservation/ReservationModal';
 
 const ReservationPage = ({ darkMode = false }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
   const [reservations, setReservations] = useState(() => {
     try {
       const saved = localStorage.getItem('cafe24h_reservations');
@@ -19,7 +20,8 @@ const ReservationPage = ({ darkMode = false }) => {
       } catch {}
       return updated;
     });
-    alert(`Reserva confirmada para ${reservationData.name} em ${reservationData.date} às ${reservationData.time}!`);
+    setSuccessMessage(`Mesa reservada para ${reservationData.name} em ${reservationData.date} às ${reservationData.time}! (${reservationData.tableAssigned || 'Mesa garantida'})`);
+    setTimeout(() => setSuccessMessage(null), 7000);
   };
 
   const formatDate = (dateString) => {
@@ -29,6 +31,25 @@ const ReservationPage = ({ darkMode = false }) => {
 
   return (
     <div className="max-w-6xl mx-auto">
+      {/* Notificação de Sucesso */}
+      {successMessage && (
+        <div className="mb-6 p-4 rounded-2xl bg-green-500/10 border border-green-500/30 text-green-700 dark:text-green-300 flex items-center justify-between animate-fadeIn shadow-sm">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🎉</span>
+            <div>
+              <p className="font-bold text-sm">Reserva Confirmada com Sucesso!</p>
+              <p className="text-xs">{successMessage}</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => setSuccessMessage(null)}
+            className="p-1.5 rounded-lg hover:bg-green-500/20 text-xs font-bold transition-colors"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>

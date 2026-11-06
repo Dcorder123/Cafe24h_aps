@@ -167,8 +167,38 @@ const PaymentModal = ({ isOpen, onClose, onPaymentComplete, orderData, darkMode 
         }
       }
 
-      // Criar pedido na API
-      const orderResult = await apiService.createOrder(orderPayload);
+      // Criar pedido na API com fallback local caso o backend esteja offline
+      let orderResult = { id: 'PED-' + Date.now().toString().slice(-6), estimatedTime: 30 };
+      try {
+        const res = await apiService.createOrder(orderPayload);
+        if (res && res.id) orderResult = res;
+      } catch (err) {
+        console.warn('Backend offline, salvando pedido localmente:', err.message);
+      }
+
+      // Persistir no cafe24h_orders para exibição no Painel Admin e Histórico
+      try {
+        const newOrder = {
+          id: orderResult.id,
+          data_pedido: new Date().toISOString(),
+          total: orderData.total,
+          status: 'pendente',
+          tipo_entrega: deliveryOption,
+          metodo_pagamento: selectedPaymentMethod,
+          cliente: customer.name || 'Cliente',
+          telefone: customer.phone || '',
+          endereco: fullAddress || (deliveryOption === 'delivery' ? 'Endereço informado' : 'No Restaurante / Retirada'),
+          items: orderData.items.map(item => ({
+            produto_id: item.id || 1,
+            nome: item.name || item.nome || 'Produto',
+            quantidade: item.quantity,
+            preco_unitario: item.price,
+            subtotal: item.price * item.quantity
+          }))
+        };
+        const currentOrders = JSON.parse(localStorage.getItem('cafe24h_orders') || '[]');
+        localStorage.setItem('cafe24h_orders', JSON.stringify([newOrder, ...currentOrders]));
+      } catch {}
 
       const paymentData = {
         method: selectedPaymentMethod,

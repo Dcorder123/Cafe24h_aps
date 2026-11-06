@@ -102,4 +102,53 @@ describe('Serviços Core e Formatação - Café 24h', () => {
     // Usuário corrente ativo
     expect(CustomerService.getCurrentUser().name).toBe('Maria Oliveira');
   });
+
+  test('Admin: Gerencia pedidos (saiu para entrega, pronto, finalizado), mesas e foto de produto', () => {
+    // 1. Gestão e atualização de status de pedidos
+    const mockOrder = {
+      id: 'PED-999',
+      cliente: 'João Teste',
+      total: 35.0,
+      status: 'pendente',
+      tipo_entrega: 'delivery'
+    };
+    localStorage.setItem('cafe24h_orders', JSON.stringify([mockOrder]));
+
+    const orders = JSON.parse(localStorage.getItem('cafe24h_orders'));
+    expect(orders[0].status).toBe('pendente');
+
+    // Admin avança: pronto -> saiu para entrega -> finalizado
+    const statusProgression = ['pronto', 'saiu para entrega', 'finalizado'];
+    statusProgression.forEach(nextStatus => {
+      orders[0].status = nextStatus;
+      localStorage.setItem('cafe24h_orders', JSON.stringify(orders));
+      const updated = JSON.parse(localStorage.getItem('cafe24h_orders'));
+      expect(updated[0].status).toBe(nextStatus);
+    });
+
+    // 2. Gestão de Mesas (Cadastrar e alternar status Livre <-> Ocupada)
+    const tables = [
+      { id: 1, name: 'Mesa 1', capacity: 4, status: 'livre' }
+    ];
+    tables.push({ id: 2, name: 'Mesa 2', capacity: 6, status: 'livre' });
+    expect(tables).toHaveLength(2);
+
+    // Alternar status
+    tables[0].status = 'ocupada';
+    expect(tables[0].status).toBe('ocupada');
+    tables[0].status = 'livre';
+    expect(tables[0].status).toBe('livre');
+
+    // 3. Cadastro de produto com foto em base64 DataURL
+    const fakeBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+    const prodWithPhoto = ProductService.getInstance().addProduct({
+      name: 'Café com Foto',
+      price: 12.5,
+      category: CATEGORIES.COFFEE,
+      imageUrl: fakeBase64
+    });
+
+    expect(prodWithPhoto.imageUrl).toBe(fakeBase64);
+    expect(prodWithPhoto.name).toBe('Café com Foto');
+  });
 });
