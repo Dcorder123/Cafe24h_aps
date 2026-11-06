@@ -48,12 +48,13 @@ export const ADMIN_PASSWORDS = [
   '1234'
 ];
 
-// Configuração do Firebase
+// Configuração do Firebase (lida das variáveis de ambiente .env / Netlify)
 export const FIREBASE_CONFIG = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyD8nolmjSg08cP_D9HLwJss6RoNAoaNeDM",
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "cafe-24h-portifolio.firebaseapp.com",
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "cafe-24h-portifolio",
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "cafe-24h-portifolio.firebasestorage.app",
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "631055718745",
-  appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:631055718745:web:d5fb8a14ab3a6314a91448"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || '',
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || '',
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || '',
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || '',
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || '',
+  appId: process.env.REACT_APP_FIREBASE_APP_ID || '',
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || ''
 };

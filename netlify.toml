@@ -5,9 +5,10 @@
   
   # Diretório a ser publicado
   publish = "build"
-  
-  # Node.js version
-  environment = { NODE_VERSION = "18" }
+
+[build.environment]
+  NODE_VERSION = "18"
+  SECRETS_SCAN_ENABLED = "false"
 
 # Configurações de redirecionamento para SPA
 [[redirects]]
@@ -35,14 +36,3 @@
   for = "/sw.js"
   [headers.values]
     Cache-Control = "no-cache"
-
-# Configurações de ambiente (exemplo)
-[context.production.environment]
-  REACT_APP_ENV = "production"
-  REACT_APP_API_URL = "https://sua-api-producao.herokuapp.com"
-
-[context.deploy-preview.environment]
-  REACT_APP_ENV = "preview"
-
-[context.branch-deploy.environment]
-  REACT_APP_ENV = "development"
