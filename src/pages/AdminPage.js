@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CATEGORIES, PAGES } from '../utils/constants';
+import { CATEGORIES, PAGES, ADMIN_PASSWORDS } from '../utils/constants';
 import { ProductService } from '../services/ProductService';
 import { onlyDecimals, formatPhone } from '../utils/formatters';
 
@@ -186,7 +186,7 @@ const AdminPage = ({
   // Login handler
   const handleLogin = (e) => {
     e.preventDefault();
-    if (password === 'admin' || password === 'admin123' || password === '1234') {
+    if (ADMIN_PASSWORDS.includes(password)) {
       onLoginSuccess();
       setPassword('');
       setLoginError('');

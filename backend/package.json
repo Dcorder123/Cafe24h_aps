@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server-complete.js",
     "dev": "nodemon server-complete.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "keywords": ["nodejs", "express", "mysql", "api", "cafeteria"],
   "author": "Equipe APS",

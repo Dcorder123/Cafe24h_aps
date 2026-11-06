@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CATEGORIES } from '../../utils/constants';
+import { CATEGORIES, ADMIN_PASSWORDS } from '../../utils/constants';
 import { ProductService } from '../../services/ProductService';
 import { onlyDecimals } from '../../utils/formatters';
 
@@ -20,7 +20,7 @@ const AdminModal = ({ isOpen, onClose, isAdmin, onLoginSuccess, onLogout, darkMo
   const handleLogin = (e) => {
     e.preventDefault();
     // Senha simples de admin para apresentação/APS
-    if (password === 'admin' || password === 'admin123' || password === '1234') {
+    if (ADMIN_PASSWORDS.includes(password)) {
       onLoginSuccess();
       setPassword('');
       setError('');

@@ -84,10 +84,12 @@ cp .env.example .env
 # Edite as variáveis conforme necessário
 ```
 
-### 4️⃣ Inicie o backend
+### 4️⃣ Inicie o backend (Opcional - a aplicação possui fallback offline)
 ```bash
-# Terminal 1 - API
-node server-complete.js
+# Terminal 1 - API Node.js/Express
+cd backend && npm start
+# Ou a partir da raiz:
+npm run start:backend
 ```
 
 ### 5️⃣ Inicie o frontend
@@ -99,34 +101,41 @@ npm start
 ### 6️⃣ Acesse o sistema
 - **Frontend**: http://localhost:3000
 - **API**: http://localhost:3001
+- **Painel Administrativo**: http://localhost:3000 (clique no botão **Admin** no topo ou na barra lateral; senha de teste: `admin` ou `1234`)
 
-### 🎯 Executar com Script Automático
+### 🧪 Executar Testes Automatizados
 ```bash
-# Windows
-iniciar.bat
+# Testes do Frontend (React / Jest)
+npm test -- --watchAll=false
 
-# Ou duplo clique no arquivo iniciar.bat
+# Testes de Integração da API Backend (Node.js)
+cd backend && npm test
 ```
 
 ## 📁 Estrutura do Projeto
 
 ```
 sistema-cafeteria/
-├── 📁 src/                          # Código React
-│   ├── 📁 components/               # Componentes reutilizáveis
-│   │   ├── 📁 Cart/                # Carrinho de compras
-│   │   ├── 📁 Layout/              # Layout e navegação
-│   │   ├── 📁 Orders/              # Histórico de pedidos
-│   │   └── 📁 Payment/             # Sistema de pagamento
-│   ├── 📁 pages/                   # Páginas principais
-│   ├── 📁 services/                # Comunicação com API
-│   └── 📁 utils/                   # Utilitários e constantes
+├── 📁 src/                          # Aplicação Frontend React 18
+│   ├── 📁 components/               # Componentes modulares
+│   │   ├── 📁 Admin/                # Modal de login/gestão rápida
+│   │   ├── 📁 Cart/                 # Carrinho de compras persistente
+│   │   ├── 📁 Layout/               # Sidebar, Header e Footer LGPD
+│   │   ├── 📁 Orders/               # Histórico de pedidos e modal de confirmação
+│   │   ├── 📁 Payment/              # Checkout com validações, PIX e delivery
+│   │   ├── 📁 Product/              # Catálogo, cards e filtros
+│   │   ├── 📁 Reservation/          # Reserva de mesas com validação
+│   │   └── 📁 ui/                   # Cookie Banner e componentes visuais
+│   ├── 📁 pages/                    # Páginas e rotas (Menu, Admin, Conta, Reservas, Privacidade, 404)
+│   ├── 📁 services/                 # Serviços de estado (Cart, Product, Customer, Api)
+│   └── 📁 utils/                    # Constantes e formatadores de máscara
+├── 📁 backend/                      # API Backend Node.js / Express
+│   ├── 📄 server-complete.js        # Servidor da API REST
+│   ├── 📄 test.js                   # Testes automatizados de integração
+│   └── 📄 package.json              # Dependências isoladas do backend
 ├── 📁 database/                     # Scripts SQL
-├── 📁 docs/                        # Documentação
-├── 📄 server-complete.js           # API completa
-├── 📄 package.json                 # Dependências
-├── 📄 iniciar.bat                  # Script de inicialização
-└── 📄 README.md                    # Este arquivo
+├── 📄 package.json                  # Dependências do frontend
+└── 📄 README.md                     # Documentação do projeto
 ```
 
 ## 🎨 Interface

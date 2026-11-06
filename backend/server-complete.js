@@ -275,21 +275,23 @@ app.use((req, res) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Servidor completo rodando na porta ${port}`);
-  console.log('Endpoints disponíveis:');
-  console.log('- GET /api/health');
-  console.log('- POST /api/users');
-  console.log('- GET /api/users/:uid');
-  console.log('- POST /api/orders');
-  console.log('- GET /api/orders/user/:userId');
-  console.log('- GET /api/orders/:id');
-  console.log('- PATCH /api/orders/:id/status');
-  console.log('- DELETE /api/orders/:id (cancelar pedido)');
-  console.log('- PATCH /api/orders/:id/cancel (cancelar pedido)');
-  console.log('- GET /api/products');
-  console.log('- POST /api/reservations');
-  console.log('- GET /api/reservations/user/:userId');
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Servidor completo rodando na porta ${port}`);
+    console.log('Endpoints disponíveis:');
+    console.log('- GET /api/health');
+    console.log('- POST /api/users');
+    console.log('- GET /api/users/:uid');
+    console.log('- POST /api/orders');
+    console.log('- GET /api/orders/user/:userId');
+    console.log('- GET /api/orders/:id');
+    console.log('- PATCH /api/orders/:id/status');
+    console.log('- DELETE /api/orders/:id (cancelar pedido)');
+    console.log('- PATCH /api/orders/:id/cancel (cancelar pedido)');
+    console.log('- GET /api/products');
+    console.log('- POST /api/reservations');
+    console.log('- GET /api/reservations/user/:userId');
+  });
+}
 
 module.exports = app;

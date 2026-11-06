@@ -41,12 +41,19 @@ export const RESERVATION_STATUS = {
   CANCELLED: 'Cancelado'
 };
 
+// ponytail: autenticação rápida em frontend para demonstração acadêmica/APS, migrar para Firebase Auth Custom Claims em produção
+export const ADMIN_PASSWORDS = [
+  process.env.REACT_APP_ADMIN_PASSWORD || 'admin',
+  'admin123',
+  '1234'
+];
+
 // Configuração do Firebase
 export const FIREBASE_CONFIG = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyCspKtOl4VdZ_N6w-x2VFuKyoLz0MoT0WQ",
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "cafeteria-cc62b.firebaseapp.com",
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "cafeteria-cc62b",
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "cafeteria-cc62b.firebasestorage.app",
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "1078259055056",
-  appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:1078259055056:web:16f5b93b23e8b2b9b31fef"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyD8nolmjSg08cP_D9HLwJss6RoNAoaNeDM",
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "cafe-24h-portifolio.firebaseapp.com",
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "cafe-24h-portifolio",
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "cafe-24h-portifolio.firebasestorage.app",
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "631055718745",
+  appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:631055718745:web:d5fb8a14ab3a6314a91448"
 };
