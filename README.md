@@ -258,14 +258,14 @@ Este projeto é licenciado sob a MIT License - veja o arquivo [LICENSE](LICENSE)
 
 ## 👥 Equipe de Desenvolvimento
 
-- **Desenvolvedor Full Stack** - [Seu Nome](https://github.com/seu-usuario)
+- **Desenvolvedor Full Stack** - Daniel Barbosa Vasconcelos(https://github.com/seu-usuario)
 - **Orientador APS** - [Nome do Professor]
 
 ## 📞 Suporte
 
 - 📧 Email: suporte@cafeteria.com
 - 📱 WhatsApp: (11) 99999-9999
-- 🌐 Website: [cafeteria.com.br](https://cafeteria.com.br)
+- 🌐 Website: [cafeteria.com.br](https://cafe24h-ifpb.netlify.app/)
 
 ## 🎯 Status do Projeto
 

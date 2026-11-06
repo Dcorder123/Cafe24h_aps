@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 
-const ProductCard = ({ product, onAddToCart, isOutOfStock = false }) => {
+const categoryLabels = {
+  coffee: 'Café',
+  tea: 'Chá',
+  snacks: 'Salgado',
+  sweets: 'Doce',
+  drinks: 'Bebida'
+};
+
+const ProductCard = ({ product, onAddToCart, isOutOfStock = false, isAdmin = false, onDeleteProduct, darkMode = false }) => {
   const [imageError, setImageError] = useState(false);
 
   const handleAddToCart = () => {
@@ -18,7 +26,9 @@ const ProductCard = ({ product, onAddToCart, isOutOfStock = false }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+    <div className={`rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group ${
+      darkMode ? 'bg-gray-800 border border-gray-700 text-gray-100' : 'bg-white text-gray-800'
+    }`}>
       {/* Imagem do Produto */}
       <div className="relative h-48 bg-gradient-to-br from-amber-100 to-amber-200 overflow-hidden">
         {!imageError ? (
@@ -35,11 +45,13 @@ const ProductCard = ({ product, onAddToCart, isOutOfStock = false }) => {
         )}
 
         {/* Badge de Categoria */}
-        <div className="absolute top-3 left-3">
-          <span className="bg-white bg-opacity-90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-amber-700 shadow-md">
-            {product.categoryLabel}
-          </span>
-        </div>
+        {(product.categoryLabel || categoryLabels[product.category]) && (
+          <div className="absolute top-3 left-3">
+            <span className="bg-white bg-opacity-90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-amber-700 shadow-md">
+              {product.categoryLabel || categoryLabels[product.category]}
+            </span>
+          </div>
+        )}
 
         {/* Badge de Esgotado */}
         {isOutOfStock && (
@@ -63,23 +75,18 @@ const ProductCard = ({ product, onAddToCart, isOutOfStock = false }) => {
       {/* Informações do Produto */}
       <div className="p-6">
         {/* Nome e Descrição */}
-        <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-1">
+        <h3 className={`text-xl font-bold mb-2 line-clamp-1 ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
           {product.name}
         </h3>
         
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">
+        <p className={`text-sm mb-4 line-clamp-2 leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
           {product.description}
         </p>
 
         {/* Preço e Botão */}
         <div className="flex items-center justify-between">
           <div className="flex flex-col">
-            {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-sm text-gray-400 line-through">
-                {formatPrice(product.originalPrice)}
-              </span>
-            )}
-            <span className="text-2xl font-bold text-amber-600">
+            <span className="text-2xl font-bold text-amber-500">
               {formatPrice(product.price)}
             </span>
           </div>
@@ -104,6 +111,20 @@ const ProductCard = ({ product, onAddToCart, isOutOfStock = false }) => {
             )}
           </button>
         </div>
+
+        {/* Ação de Administrador */}
+        {isAdmin && onDeleteProduct && (
+          <button
+            onClick={() => {
+              if (window.confirm(`Remover "${product.name}" do cardápio?`)) {
+                onDeleteProduct(product.id);
+              }
+            }}
+            className="w-full mt-4 py-2 px-3 bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-900/40 dark:hover:bg-red-900/60 dark:text-red-300 text-sm font-medium rounded-xl transition-colors flex items-center justify-center gap-1 border border-red-200 dark:border-red-800"
+          >
+            🗑️ Remover Produto (Admin)
+          </button>
+        )}
 
         {/* Informações Adicionais */}
         {product.preparationTime && (

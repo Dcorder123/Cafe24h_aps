@@ -1,23 +1,35 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import { ProductService } from '../../services/ProductService';
 
-const ProductList = ({ selectedCategory, searchTerm, onAddToCart }) => {
+const ProductList = ({ selectedCategory, searchTerm, onAddToCart, isAdmin = false, onDeleteProduct, darkMode = false }) => {
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [productVersion, setProductVersion] = useState(0);
+
+  // Escutar adições e remoções de produtos do ProductService
+  useEffect(() => {
+    const unsub = ProductService.getInstance().subscribe(() => {
+      setProductVersion(v => v + 1);
+    });
+    return unsub;
+  }, []);
 
   // Filtrar e ordenar produtos
   const filteredAndSortedProducts = useMemo(() => {
     const productService = ProductService.getInstance();
     let products = productService.getProductsByCategory(selectedCategory);
 
-    // Aplicar busca
+    // Aplicar busca respeitando a categoria ativa
     if (searchTerm) {
-      products = productService.searchProducts(searchTerm, selectedCategory);
+      products = productService.searchProducts(searchTerm);
+      if (selectedCategory && selectedCategory !== 'all') {
+        products = products.filter(p => p.category === selectedCategory);
+      }
     }
 
-    // Aplicar ordenação
-    products.sort((a, b) => {
+    // Copiar array para evitar mutação in-place do estado do serviço
+    const sorted = [...products].sort((a, b) => {
       let comparison = 0;
       
       switch (sortBy) {
@@ -37,8 +49,9 @@ const ProductList = ({ selectedCategory, searchTerm, onAddToCart }) => {
       return sortOrder === 'asc' ? comparison : -comparison;
     });
 
-    return products;
-  }, [selectedCategory, searchTerm, sortBy, sortOrder]);
+    return sorted;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategory, searchTerm, sortBy, sortOrder, productVersion]);
 
   const handleSortChange = (newSortBy) => {
     if (sortBy === newSortBy) {
@@ -93,15 +106,17 @@ const ProductList = ({ selectedCategory, searchTerm, onAddToCart }) => {
         </div>
 
         {/* Controles de ordenação */}
-        <div className="flex items-center gap-2 bg-white rounded-xl shadow-md p-2">
-          <span className="text-sm text-gray-600 mr-2">Ordenar por:</span>
+        <div className={`flex items-center gap-2 rounded-xl shadow-md p-2 ${
+          darkMode ? 'bg-gray-800 border border-gray-700 text-gray-200' : 'bg-white text-gray-700'
+        }`}>
+          <span className="text-sm mr-2 opacity-80">Ordenar:</span>
           
           <button
             onClick={() => handleSortChange('name')}
             className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               sortBy === 'name'
-                ? 'bg-amber-100 text-amber-700'
-                : 'text-gray-600 hover:bg-gray-100'
+                ? 'bg-amber-500 text-white shadow-sm'
+                : darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
             }`}
           >
             Nome {getSortIcon('name')}
@@ -111,8 +126,8 @@ const ProductList = ({ selectedCategory, searchTerm, onAddToCart }) => {
             onClick={() => handleSortChange('price')}
             className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               sortBy === 'price'
-                ? 'bg-amber-100 text-amber-700'
-                : 'text-gray-600 hover:bg-gray-100'
+                ? 'bg-amber-500 text-white shadow-sm'
+                : darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
             }`}
           >
             Preço {getSortIcon('price')}
@@ -122,8 +137,8 @@ const ProductList = ({ selectedCategory, searchTerm, onAddToCart }) => {
             onClick={() => handleSortChange('category')}
             className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               sortBy === 'category'
-                ? 'bg-amber-100 text-amber-700'
-                : 'text-gray-600 hover:bg-gray-100'
+                ? 'bg-amber-500 text-white shadow-sm'
+                : darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
             }`}
           >
             Categoria {getSortIcon('category')}
@@ -139,6 +154,9 @@ const ProductList = ({ selectedCategory, searchTerm, onAddToCart }) => {
             product={product}
             onAddToCart={onAddToCart}
             isOutOfStock={product.stock === 0}
+            isAdmin={isAdmin}
+            onDeleteProduct={onDeleteProduct}
+            darkMode={darkMode}
           />
         ))}
       </div>

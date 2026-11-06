@@ -6,7 +6,7 @@ export class CartService {
       return CartService.instance;
     }
     
-    this.items = [];
+    this.items = this.loadFromStorage();
     this.observers = [];
     CartService.instance = this;
   }
@@ -16,6 +16,23 @@ export class CartService {
       CartService.instance = new CartService();
     }
     return CartService.instance;
+  }
+
+  loadFromStorage() {
+    try {
+      const stored = localStorage.getItem('cafe24h_cart');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  saveToStorage() {
+    try {
+      localStorage.setItem('cafe24h_cart', JSON.stringify(this.items));
+    } catch {
+      // Ignorar falhas em ambientes sem acesso ao localStorage
+    }
   }
 
   // Padrão Observer - Adicionar observador
@@ -28,8 +45,9 @@ export class CartService {
     this.observers = this.observers.filter(obs => obs !== observer);
   }
 
-  // Padrão Observer - Notificar observadores
+  // Padrão Observer - Notificar observadores e persistir
   notifyObservers() {
+    this.saveToStorage();
     this.observers.forEach(observer => observer.update(this.items));
   }
 

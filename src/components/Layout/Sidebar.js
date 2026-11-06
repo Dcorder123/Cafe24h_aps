@@ -1,15 +1,19 @@
 import React from 'react';
-import { CATEGORIES } from '../../utils/constants';
+import { CATEGORIES, PAGES } from '../../utils/constants';
 import CaffeIcon from '../ui/CaffeIcon';
 import ToggleArrow from '../ui/ToggleArrow';
 
 const Sidebar = ({ 
   selectedCategory, 
   onCategoryChange, 
-  onPageChange, 
   isCollapsed, 
   onToggleCollapse,
-  className = ""
+  darkMode = false,
+  className = "",
+  currentPage,
+  onNavigate,
+  onOpenAdmin,
+  isAdmin = false
 }) => {
   const categories = [
     { key: CATEGORIES.ALL, icon: '🍽️', label: 'Todos' },
@@ -20,124 +24,146 @@ const Sidebar = ({
     { key: CATEGORIES.DRINKS, icon: '🥤', label: 'Bebidas' }
   ];
 
-  const menuItems = [
-    { key: 'account', icon: '👤', label: 'Minha Conta' },
-    { key: 'history', icon: '📜', label: 'Meus Pedidos' },
-    { key: 'reservation', icon: '🗓️', label: 'Reservas' }
+  const mainPages = [
+    { key: PAGES.MENU, icon: '☕', label: 'Cardápio' },
+    { key: PAGES.HISTORY, icon: '📋', label: 'Meus Pedidos' },
+    { key: PAGES.RESERVATION, icon: '🗓️', label: 'Reservar Mesa' },
+    { key: PAGES.ACCOUNT, icon: '👤', label: 'Minha Conta' }
   ];
 
   return (
-    <div className={`sidebar-gradient shadow-2xl border-r border-gray-200 transition-all duration-300 relative ${
+    <div className={`shadow-2xl border-r transition-all duration-300 relative h-full flex flex-col justify-between overflow-y-auto ${
+      darkMode ? 'bg-gray-900 border-gray-800 text-gray-200' : 'sidebar-gradient border-gray-200 text-gray-700'
+    } ${
       isCollapsed ? 'w-16' : 'w-64'
     } ${className}`}>
-      {/* Toggle Button - Dentro da sidebar, transparente */}
+      {/* Toggle Button - Transparente na borda da sidebar (apenas desktop) */}
       <button
         onClick={onToggleCollapse}
-        className="absolute top-1/2 -right-2 transform -translate-y-1/2 z-10 
-                   bg-amber-600/70 hover:bg-amber-700/80 backdrop-blur-sm
+        className="hidden md:flex absolute top-1/2 -right-2 transform -translate-y-1/2 z-10 
+                   bg-amber-600/80 hover:bg-amber-700 backdrop-blur-sm
                    text-white p-2 rounded-full shadow-lg border border-amber-500/30
-                   transition-all duration-300 w-7 h-7 flex items-center justify-center"
+                   transition-all duration-300 w-7 h-7 items-center justify-center"
         aria-label={isCollapsed ? "Abrir menu" : "Fechar menu"}
       >
         <ToggleArrow isCollapsed={isCollapsed} className="w-4 h-4" />
       </button>
 
-      <div className="p-6">
+      {/* Top Section: Logo, Páginas Principais (Mobile) e Categorias */}
+      <div className={isCollapsed ? 'p-2' : 'p-4 sm:p-6'}>
         {/* Header com Logo */}
-        <div className="flex items-center justify-center mb-8">
-          <div className={`flex items-center transition-opacity duration-300 ${
-            isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
-          }`}>
-            <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center mr-3 shadow-lg">
+        <div className="flex items-center justify-center mb-6">
+          <div className="flex items-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
               <CaffeIcon className="w-6 h-6" color="white" />
             </div>
-            <span className="text-2xl font-bold text-gray-800">
-              <span className="text-amber-600">C</span>affe
-            </span>
+            {!isCollapsed && (
+              <span className={`text-2xl font-bold ml-3 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                <span className="text-amber-500">C</span>affe
+              </span>
+            )}
           </div>
         </div>
 
-        {/* Navegação */}
-        <nav className="space-y-2">
-          {/* Seção Categorias */}
-          <div className={`text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-3 transition-opacity duration-300 ${
-            isCollapsed ? 'opacity-0' : 'opacity-100'
-          }`}>
-            {!isCollapsed && 'Categorias'}
+        {/* Páginas Principais (Exibidas quando expandido, essencial para celular) */}
+        {!isCollapsed && (
+          <div className="mb-6 space-y-1 md:hidden">
+            <div className={`text-xs font-semibold uppercase tracking-wider mb-2 px-3 ${
+              darkMode ? 'text-gray-400' : 'text-gray-500'
+            }`}>
+              Navegação
+            </div>
+            {mainPages.map((page) => (
+              <button
+                key={page.key}
+                onClick={() => onNavigate && onNavigate(page.key)}
+                className={`w-full flex items-center text-left rounded-xl px-4 py-2.5 transition-all text-sm font-medium ${
+                  currentPage === page.key
+                    ? 'bg-amber-600 text-white shadow-sm'
+                    : darkMode 
+                      ? 'text-gray-300 hover:bg-gray-800' 
+                      : 'text-gray-700 hover:bg-white hover:shadow-sm'
+                }`}
+              >
+                <span className="text-lg mr-3">{page.icon}</span>
+                <span>{page.label}</span>
+              </button>
+            ))}
+
+            {/* Acesso Admin no mobile */}
+            <button
+              onClick={onOpenAdmin}
+              className={`w-full flex items-center text-left rounded-xl px-4 py-2.5 transition-all text-sm font-medium ${
+                isAdmin 
+                  ? 'bg-red-500/20 text-red-400 border border-red-500/30' 
+                  : darkMode ? 'text-gray-300 hover:bg-gray-800' : 'text-gray-700 hover:bg-white'
+              }`}
+            >
+              <span className="text-lg mr-3">🛡️</span>
+              <span>{isAdmin ? 'Admin (Ativo)' : 'Painel Admin'}</span>
+            </button>
+            <hr className={`my-4 ${darkMode ? 'border-gray-800' : 'border-gray-200'}`} />
           </div>
+        )}
+
+        {/* Navegação de Categorias */}
+        <nav className="space-y-1.5">
+          {!isCollapsed && (
+            <div className={`text-xs font-semibold uppercase tracking-wider mb-2 px-3 ${
+              darkMode ? 'text-gray-400' : 'text-gray-500'
+            }`}>
+              Cardápio
+            </div>
+          )}
           
           {categories.map(category => (
             <button 
               key={category.key}
               onClick={() => onCategoryChange(category.key)}
-              className={`w-full flex items-center px-4 py-3 text-left rounded-xl transition-all duration-200 group ${
+              className={`w-full flex items-center text-left rounded-xl transition-all duration-200 group ${
                 selectedCategory === category.key 
-                  ? 'bg-amber-100 text-amber-700 shadow-md' 
-                  : 'text-gray-700 hover:bg-white hover:shadow-md'
-              } ${isCollapsed ? 'justify-center' : ''}`}
+                  ? 'bg-amber-500 text-white shadow-md font-semibold' 
+                  : darkMode 
+                    ? 'text-gray-300 hover:bg-gray-800' 
+                    : 'text-gray-700 hover:bg-white hover:shadow-md'
+              } ${isCollapsed ? 'justify-center py-3 px-0' : 'px-4 py-2.5'}`}
               title={isCollapsed ? category.label : ''}
             >
-              <span className="text-lg group-hover:scale-110 transition-transform">
+              <span className="text-lg flex-shrink-0 group-hover:scale-110 transition-transform">
                 {category.icon}
               </span>
-              <span className={`font-medium ml-3 transition-opacity duration-300 ${
-                isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
-              }`}>
-                {category.label}
-              </span>
+              {!isCollapsed && (
+                <span className="font-medium text-sm ml-3 truncate">
+                  {category.label}
+                </span>
+              )}
             </button>
           ))}
-
-          <hr className={`my-6 border-gray-200 transition-opacity duration-300 ${
-            isCollapsed ? 'opacity-0' : 'opacity-100'
-          }`} />
-
-          {/* Seção Conta */}
-          <div className={`text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-3 transition-opacity duration-300 ${
-            isCollapsed ? 'opacity-0' : 'opacity-100'
-          }`}>
-            {!isCollapsed && 'Conta'}
-          </div>
-          
-          {menuItems.map(item => (
-            <button 
-              key={item.key}
-              onClick={() => onPageChange(item.key)}
-              className={`w-full flex items-center px-4 py-3 text-left text-gray-700 rounded-xl hover:bg-white hover:shadow-md transition-all duration-200 group ${
-                isCollapsed ? 'justify-center' : ''
-              }`}
-              title={isCollapsed ? item.label : ''}
-            >
-              <span className="text-lg group-hover:scale-110 transition-transform">
-                {item.icon}
-              </span>
-              <span className={`font-medium ml-3 transition-opacity duration-300 ${
-                isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
-              }`}>
-                {item.label}
-              </span>
-            </button>
-          ))}
-
-          <hr className={`my-4 border-gray-200 transition-opacity duration-300 ${
-            isCollapsed ? 'opacity-0' : 'opacity-100'
-          }`} />
-
-          {/* Botão Sair */}
-          <button 
-            className={`w-full flex items-center px-4 py-2 text-left text-red-600 rounded-xl hover:bg-red-50 hover:shadow-md transition-all duration-200 group ${
-              isCollapsed ? 'justify-center' : ''
-            }`}
-            title={isCollapsed ? 'Sair' : ''}
-          >
-            <span className="text-lg group-hover:scale-110 transition-transform">🚪</span>
-            <span className={`font-medium ml-3 transition-opacity duration-300 ${
-              isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
-            }`}>
-              Sair
-            </span>
-          </button>
         </nav>
+      </div>
+
+      {/* Bottom Section: Botão Ajustes e Preferências */}
+      <div className={`border-t ${darkMode ? 'border-gray-800' : 'border-gray-200'} ${isCollapsed ? 'p-2' : 'p-4'}`}>
+        <button
+          onClick={() => onNavigate && onNavigate(PAGES.ACCOUNT)}
+          className={`w-full flex items-center text-left rounded-xl transition-all duration-200 group ${
+            currentPage === PAGES.ACCOUNT
+              ? 'bg-amber-500 text-white shadow-md font-semibold'
+              : darkMode
+                ? 'text-gray-300 hover:bg-gray-800'
+                : 'text-gray-700 hover:bg-white hover:shadow-md'
+          } ${isCollapsed ? 'justify-center py-2.5 px-0' : 'px-4 py-2.5'}`}
+          title={isCollapsed ? "Ajustes e Preferências" : ""}
+        >
+          <span className="text-lg flex-shrink-0 group-hover:rotate-45 transition-transform duration-200">
+            ⚙️
+          </span>
+          {!isCollapsed && (
+            <span className="font-medium text-sm ml-3 truncate">
+              Ajustes
+            </span>
+          )}
+        </button>
       </div>
     </div>
   );

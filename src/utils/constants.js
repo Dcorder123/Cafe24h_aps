@@ -7,7 +7,9 @@ export const PAGES = {
   CART: 'cart',
   HISTORY: 'history',
   RESERVATION: 'reservation',
-  ACCOUNT: 'account'
+  ACCOUNT: 'account',
+  PRIVACY: 'privacy',
+  NOT_FOUND: 'not_found'
 };
 
 export const CATEGORIES = {
@@ -39,10 +41,10 @@ export const RESERVATION_STATUS = {
 
 // Configuração do Firebase
 export const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyCspKtOl4VdZ_N6w-x2VFuKyoLz0MoT0WQ",
-  authDomain: "cafeteria-cc62b.firebaseapp.com",
-  projectId: "cafeteria-cc62b",
-  storageBucket: "cafeteria-cc62b.firebasestorage.app",
-  messagingSenderId: "1078259055056",
-  appId: "1:1078259055056:web:16f5b93b23e8b2b9b31fef"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyCspKtOl4VdZ_N6w-x2VFuKyoLz0MoT0WQ",
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "cafeteria-cc62b.firebaseapp.com",
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "cafeteria-cc62b",
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "cafeteria-cc62b.firebasestorage.app",
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "1078259055056",
+  appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:1078259055056:web:16f5b93b23e8b2b9b31fef"
 };

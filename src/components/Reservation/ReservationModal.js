@@ -1,16 +1,25 @@
 import React, { useState } from 'react';
 import { getAuth } from 'firebase/auth';
 import apiService from '../../services/ApiService';
+import { formatPhone } from '../../utils/formatters';
+import { CustomerService } from '../../services/CustomerService';
 
-const ReservationModal = ({ isOpen, onClose, onReservationComplete }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    date: '',
-    time: '',
-    guests: 2,
-    specialRequests: ''
+const ReservationModal = ({ isOpen, onClose, onReservationComplete, darkMode = false }) => {
+  const [formData, setFormData] = useState(() => {
+    let saved = null;
+    try {
+      const u = localStorage.getItem('cafe24h_user');
+      if (u) saved = JSON.parse(u);
+    } catch {}
+    return {
+      name: saved?.name || '',
+      email: saved?.email || '',
+      phone: saved?.phone || '',
+      date: '',
+      time: '',
+      guests: 2,
+      specialRequests: ''
+    };
   });
   const [processing, setProcessing] = useState(false);
 
@@ -22,9 +31,27 @@ const ReservationModal = ({ isOpen, onClose, onReservationComplete }) => {
   const guestOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   const handleInputChange = (field, value) => {
+    let finalValue = value;
+    if (field === 'phone') {
+      finalValue = formatPhone(value);
+      const digits = finalValue.replace(/\D/g, '');
+      if (digits.length >= 10) {
+        const existing = CustomerService.findByPhone(digits);
+        if (existing && !formData.name) {
+          setFormData(prev => ({
+            ...prev,
+            name: existing.name || prev.name,
+            email: existing.email || prev.email,
+            phone: finalValue
+          }));
+          return;
+        }
+      }
+    }
+
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [field]: finalValue
     }));
   };
 
@@ -112,18 +139,24 @@ const ReservationModal = ({ isOpen, onClose, onReservationComplete }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className={`rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto ${
+        darkMode ? 'bg-gray-800 text-gray-100 border border-gray-700' : 'bg-white text-gray-800'
+      }`}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-amber-50 to-amber-100">
-          <h2 className="text-2xl font-bold text-gray-800 flex items-center">
+        <div className={`flex items-center justify-between p-6 border-b ${
+          darkMode ? 'border-gray-700 bg-gray-900/60 text-white' : 'border-gray-200 bg-gradient-to-r from-amber-50 to-amber-100 text-gray-800'
+        }`}>
+          <h2 className="text-2xl font-bold flex items-center">
             🗓️ <span className="ml-2">Reservar Mesa</span>
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white rounded-lg transition-colors duration-200"
+            className={`p-2 rounded-lg transition-colors duration-200 ${
+              darkMode ? 'hover:bg-gray-700' : 'hover:bg-white'
+            }`}
           >
-            <span className="text-xl">❌</span>
+            <span className="text-xl">✕</span>
           </button>
         </div>
 

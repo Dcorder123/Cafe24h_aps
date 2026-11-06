@@ -8,7 +8,8 @@ export class ProductService {
       return ProductService.instance;
     }
     
-    this.products = this.generatePlaceholderProducts();
+    this.listeners = [];
+    this.products = this.loadProducts();
     ProductService.instance = this;
   }
 
@@ -17,6 +18,55 @@ export class ProductService {
       ProductService.instance = new ProductService();
     }
     return ProductService.instance;
+  }
+
+  loadProducts() {
+    try {
+      const stored = localStorage.getItem('cafe24h_custom_products');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return this.generatePlaceholderProducts();
+  }
+
+  saveProducts() {
+    try {
+      localStorage.setItem('cafe24h_custom_products', JSON.stringify(this.products));
+    } catch {}
+  }
+
+  subscribe(listener) {
+    this.listeners.push(listener);
+    return () => {
+      this.listeners = this.listeners.filter(l => l !== listener);
+    };
+  }
+
+  notify() {
+    this.listeners.forEach(fn => fn(this.products));
+  }
+
+  addProduct(product) {
+    const newProd = {
+      id: 'prod_' + Date.now(),
+      name: product.name,
+      description: product.description || '',
+      price: parseFloat(product.price) || 0,
+      category: product.category || CATEGORIES.COFFEE,
+      imageUrl: product.imageUrl || '/images/placeholder.svg'
+    };
+    this.products.unshift(newProd);
+    this.saveProducts();
+    this.notify();
+    return newProd;
+  }
+
+  deleteProduct(id) {
+    this.products = this.products.filter(p => p.id !== id);
+    this.saveProducts();
+    this.notify();
   }
 
   generatePlaceholderProducts() {

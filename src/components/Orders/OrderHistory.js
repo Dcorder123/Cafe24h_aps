@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
 import apiService from '../../services/ApiService';
 
-const OrderHistory = () => {
+const OrderHistory = ({ darkMode = false }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -187,28 +187,30 @@ const OrderHistory = () => {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">📋 Meus Pedidos</h1>
-          <p className="text-gray-600">Acompanhe o histórico dos seus pedidos</p>
+          <h1 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>📋 Meus Pedidos</h1>
+          <p className={darkMode ? 'text-gray-300' : 'text-gray-600'}>Acompanhe o histórico dos seus pedidos</p>
         </div>
 
         {orders.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">🛒</div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Nenhum pedido encontrado</h3>
-            <p className="text-gray-600">Você ainda não fez nenhum pedido.</p>
+            <h3 className={`text-xl font-semibold mb-2 ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>Nenhum pedido encontrado</h3>
+            <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Você ainda não fez nenhum pedido.</p>
           </div>
         ) : (
           <div className="space-y-4">
             {orders.map((order) => (
-              <div key={order.id} className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+              <div key={order.id} className={`rounded-xl shadow-lg border overflow-hidden ${
+                darkMode ? 'bg-gray-800 border-gray-700 text-gray-100' : 'bg-white border-gray-200 text-gray-800'
+              }`}>
                 <div className="p-6">
                   {/* Header do pedido */}
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800">
+                      <h3 className={`text-lg font-semibold ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
                         Pedido #{order.id}
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                         {formatDate(order.data_pedido)}
                       </p>
                     </div>

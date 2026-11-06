@@ -1,23 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ProductList from '../components/Product/ProductList';
-import CartModal from '../components/Cart/CartModal';
 import { useCart } from '../hooks/useCart';
 import { CATEGORIES } from '../utils/constants';
 
-const MenuPage = ({ selectedCategory, searchTerm }) => {
-  const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+const MenuPage = ({ selectedCategory, searchTerm, onOpenCart, isAdmin = false, onDeleteProduct, onOpenAddProduct, darkMode = false }) => {
   const { addItem, itemCount, total } = useCart();
 
   const handleAddToCart = (product) => {
     addItem(product);
-    // Feedback visual opcional
-    console.log(`Produto ${product.name} adicionado ao carrinho!`);
-  };
-
-  const handleCheckout = (items, totalAmount) => {
-    console.log('Finalizando pedido:', { items, total: totalAmount });
-    // Aqui seria implementada a lógica de checkout
-    // Por exemplo, redirecionamento para página de pagamento
   };
 
   const formatPrice = (price) => {
@@ -26,29 +16,38 @@ const MenuPage = ({ selectedCategory, searchTerm }) => {
 
   return (
     <div className="relative">
+      {/* Banner de Admin se estiver ativo */}
+      {isAdmin && (
+        <div className="mb-6 p-4 bg-amber-500/10 border-2 border-dashed border-amber-500 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-3">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🛡️</span>
+            <div>
+              <p className="font-bold text-amber-600 dark:text-amber-400">Modo Administrador Ativo</p>
+              <p className="text-xs text-gray-600 dark:text-gray-300">Você pode adicionar itens ao cardápio ou remover produtos diretamente nos cards.</p>
+            </div>
+          </div>
+          <button
+            onClick={onOpenAddProduct}
+            className="bg-amber-600 hover:bg-amber-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-md transition-all flex items-center gap-2"
+          >
+            <span>➕</span> Adicionar Produto
+          </button>
+        </div>
+      )}
+
       {/* Header da página */}
-      <div className="bg-gradient-to-r from-amber-50 to-amber-100 p-6 rounded-2xl shadow-md mb-8">
+      <div className={`p-6 rounded-2xl shadow-md mb-8 ${
+        darkMode ? 'bg-gray-800 border border-gray-700 text-gray-100' : 'bg-gradient-to-r from-amber-50 to-amber-100'
+      }`}>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            <h1 className="text-3xl font-bold mb-2">
               {selectedCategory === CATEGORIES.ALL ? '🍽️ Cardápio Completo' : getCategoryTitle(selectedCategory)}
             </h1>
-            <p className="text-gray-600">
+            <p className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
               Escolha seus itens favoritos e monte seu pedido perfeito
             </p>
           </div>
-
-          {/* Botão do carrinho flutuante */}
-          {itemCount > 0 && (
-            <button
-              onClick={() => setIsCartModalOpen(true)}
-              className="mt-4 sm:mt-0 bg-gradient-to-r from-amber-500 to-amber-600 text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2"
-            >
-              <span className="text-lg">🛒</span>
-              <span>{itemCount} {itemCount === 1 ? 'item' : 'itens'}</span>
-              <span className="ml-2 font-bold">{formatPrice(total)}</span>
-            </button>
-          )}
         </div>
       </div>
 
@@ -57,19 +56,15 @@ const MenuPage = ({ selectedCategory, searchTerm }) => {
         selectedCategory={selectedCategory}
         searchTerm={searchTerm}
         onAddToCart={handleAddToCart}
-      />
-
-      {/* Modal do carrinho */}
-      <CartModal
-        isOpen={isCartModalOpen}
-        onClose={() => setIsCartModalOpen(false)}
-        onCheckout={handleCheckout}
+        isAdmin={isAdmin}
+        onDeleteProduct={onDeleteProduct}
+        darkMode={darkMode}
       />
 
       {/* Botão carrinho fixo (mobile) */}
-      {itemCount > 0 && (
+      {itemCount > 0 && onOpenCart && (
         <button
-          onClick={() => setIsCartModalOpen(true)}
+          onClick={onOpenCart}
           className="fixed bottom-6 right-6 bg-gradient-to-r from-amber-500 to-amber-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200 z-40 sm:hidden"
         >
           <div className="flex items-center gap-2">

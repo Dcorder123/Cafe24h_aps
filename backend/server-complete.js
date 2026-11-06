@@ -10,6 +10,7 @@ app.use(express.json());
 // Dados mock para testes
 let orders = [];
 let nextOrderId = 1;
+let reservations = [];
 let users = [
   {
     id: 1,
@@ -24,8 +25,8 @@ let nextUserId = 2;
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     message: 'API funcionando'
   });
 });
@@ -55,14 +56,14 @@ app.post('/api/orders', (req, res) => {
   try {
     // Simular processamento de pagamento
     const paymentResult = processPayment(req.body.metodo_pagamento, req.body.total);
-    
+
     if (!paymentResult.success) {
-      return res.status(400).json({ 
-        error: 'Falha no pagamento', 
-        message: paymentResult.message 
+      return res.status(400).json({
+        error: 'Falha no pagamento',
+        message: paymentResult.message
       });
     }
-    
+
     const newOrder = {
       id: nextOrderId++,
       ...req.body,
@@ -73,10 +74,10 @@ app.post('/api/orders', (req, res) => {
       pagamento_confirmado: true,
       data_pagamento: new Date().toISOString()
     };
-    
+
     orders.push(newOrder);
     console.log('✅ Pedido criado e pago com sucesso:', newOrder);
-    
+
     // Simular atualização de status após alguns segundos
     setTimeout(() => {
       const order = orders.find(o => o.id === newOrder.id);
@@ -85,16 +86,16 @@ app.post('/api/orders', (req, res) => {
         console.log(`📋 Pedido ${newOrder.id} agora está sendo preparado`);
       }
     }, 3000);
-    
+
     res.json({
       ...newOrder,
       message: 'Pagamento processado com sucesso!'
     });
   } catch (error) {
     console.error('❌ Erro ao processar pedido:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Erro interno do servidor',
-      message: 'Falha ao processar o pedido' 
+      message: 'Falha ao processar o pedido'
     });
   }
 });
@@ -102,7 +103,7 @@ app.post('/api/orders', (req, res) => {
 // Função para simular processamento de pagamento
 function processPayment(method, amount) {
   console.log(`💳 Processando pagamento: ${method} - R$ ${amount}`);
-  
+
   switch (method.toLowerCase()) {
     case 'pix':
       return {
@@ -110,23 +111,15 @@ function processPayment(method, amount) {
         message: 'PIX processado com sucesso',
         transactionCode: `PIX-${generateTransactionCode()}`
       };
-    
+
     case 'cartao':
     case 'card':
-      // Simular falha ocasional para cartão (5% de chance)
-      if (Math.random() < 0.05) {
-        return {
-          success: false,
-          message: 'Cartão recusado. Tente novamente.',
-          transactionCode: null
-        };
-      }
       return {
         success: true,
         message: 'Cartão processado com sucesso',
         transactionCode: `CARD-${generateTransactionCode()}`
       };
-    
+
     case 'dinheiro':
     case 'cash':
       return {
@@ -134,7 +127,7 @@ function processPayment(method, amount) {
         message: 'Pagamento em dinheiro confirmado',
         transactionCode: `CASH-${generateTransactionCode()}`
       };
-    
+
     default:
       return {
         success: false,
@@ -152,54 +145,6 @@ function generateTransactionCode() {
 app.get('/api/orders/user/:userId', (req, res) => {
   const userId = parseInt(req.params.userId);
   const userOrders = orders.filter(order => order.usuario_id === userId);
-  
-  // Adicionar dados mock se não houver pedidos
-  if (userOrders.length === 0) {
-    const mockOrders = [
-      {
-        id: 1001,
-        usuario_id: userId,
-        data_pedido: '2024-01-15T10:30:00',
-        total: 25.50,
-        status: 'entregue',
-        tipo_entrega: 'delivery',
-        metodo_pagamento: 'pix',
-        items: [
-          { nome: 'Café Expresso', quantidade: 2, preco_unitario: 5.00 },
-          { nome: 'Pão de Açúcar', quantidade: 1, preco_unitario: 15.50 }
-        ]
-      },
-      {
-        id: 1002,
-        usuario_id: userId,
-        data_pedido: '2024-01-10T14:15:00',
-        total: 18.00,
-        status: 'preparando',
-        tipo_entrega: 'pickup',
-        metodo_pagamento: 'card',
-        items: [
-          { nome: 'Cappuccino', quantidade: 1, preco_unitario: 8.00 },
-          { nome: 'Croissant', quantidade: 2, preco_unitario: 5.00 }
-        ]
-      },
-      {
-        id: 1003,
-        usuario_id: userId,
-        data_pedido: '2024-01-05T16:45:00',
-        total: 32.00,
-        status: 'pronto',
-        tipo_entrega: 'local',
-        metodo_pagamento: 'cash',
-        items: [
-          { nome: 'Latte', quantidade: 1, preco_unitario: 7.00 },
-          { nome: 'Sanduíche Natural', quantidade: 1, preco_unitario: 12.00 },
-          { nome: 'Bolo de Chocolate', quantidade: 1, preco_unitario: 13.00 }
-        ]
-      }
-    ];
-    return res.json(mockOrders);
-  }
-  
   res.json(userOrders);
 });
 
@@ -225,26 +170,26 @@ app.patch('/api/orders/:id/status', (req, res) => {
 app.delete('/api/orders/:id', (req, res) => {
   const orderId = parseInt(req.params.id);
   const orderIndex = orders.findIndex(o => o.id === orderId);
-  
+
   if (orderIndex === -1) {
     return res.status(404).json({ error: 'Pedido não encontrado' });
   }
-  
+
   const order = orders[orderIndex];
-  
+
   // Verificar se o pedido pode ser cancelado
   if (order.status === 'entregue' || order.status === 'pronto') {
-    return res.status(400).json({ 
+    return res.status(400).json({
       error: 'Não é possível cancelar este pedido',
       message: 'Pedidos já entregues ou prontos não podem ser cancelados'
     });
   }
-  
+
   // Remover o pedido da lista
   orders.splice(orderIndex, 1);
   console.log(`🗑️ Pedido ${orderId} cancelado e removido`);
-  
-  res.json({ 
+
+  res.json({
     message: 'Pedido cancelado com sucesso',
     canceledOrder: order
   });
@@ -254,26 +199,26 @@ app.delete('/api/orders/:id', (req, res) => {
 app.patch('/api/orders/:id/cancel', (req, res) => {
   const orderId = parseInt(req.params.id);
   const order = orders.find(o => o.id === orderId);
-  
+
   if (!order) {
     return res.status(404).json({ error: 'Pedido não encontrado' });
   }
-  
+
   // Verificar se o pedido pode ser cancelado
   if (order.status === 'entregue' || order.status === 'pronto') {
-    return res.status(400).json({ 
+    return res.status(400).json({
       error: 'Não é possível cancelar este pedido',
       message: 'Pedidos já entregues ou prontos não podem ser cancelados'
     });
   }
-  
+
   // Atualizar status para cancelado
   order.status = 'cancelado';
   order.data_cancelamento = new Date().toISOString();
   order.motivo_cancelamento = req.body.motivo || 'Cancelado pelo cliente';
-  
+
   console.log(`❌ Pedido ${orderId} cancelado:`, order);
-  
+
   res.json({
     message: 'Pedido cancelado com sucesso',
     order: order
@@ -323,7 +268,7 @@ app.get('/api/reservations/user/:userId', (req, res) => {
 // Middleware para rotas não encontradas
 app.use((req, res) => {
   console.log('Rota não encontrada:', req.method, req.originalUrl);
-  res.status(404).json({ 
+  res.status(404).json({
     error: 'Endpoint não encontrado',
     method: req.method,
     url: req.originalUrl
